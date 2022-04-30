@@ -29,6 +29,21 @@
             android:textColor="@color/white"
             android:textStyle="bold"/>
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/button_back"
+            android:onClick="@{()->viewModel.onClickStart()}"
+            android:text="@{viewModel.onStart?@string/stop:@string/start}"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
