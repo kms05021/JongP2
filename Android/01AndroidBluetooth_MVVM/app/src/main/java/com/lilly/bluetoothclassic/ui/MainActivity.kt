@@ -22,58 +22,58 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
-
     private val viewModel by viewModel<MainViewModel>()
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                viewModel.onClickConnect()
+            }
+        }
 
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // view model binding
         val binding: ActivityMainBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = viewModel
 
+        // Permission 요청
         if (!hasPermissions(this, PERMISSIONS)) {
             requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
         }
 
         initObserving()
-
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            viewModel.onClickConnect()
-        }
-    }
-
-
-    private fun initObserving(){
-
-        //Progress
-        viewModel.inProgress.observe(this, {
+    private fun initObserving() {
+        // Progress
+        viewModel.inProgress.observe(this) {
             if (it.getContentIfNotHandled() == true) {
                 viewModel.inProgressView.set(true)
             } else {
                 viewModel.inProgressView.set(false)
             }
-        })
-        //Progress text
-        viewModel.progressState.observe(this, {
-            viewModel.txtProgress.set(it)
-        })
+        }
 
-        //Bluetooth On 요청
-        viewModel.requestBleOn.observe(this, {
+        // Progress text
+        viewModel.progressState.observe(this) {
+            viewModel.txtProgress.set(it)
+        }
+
+        // Bluetooth On 요청
+        viewModel.requestBleOn.observe(this) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startForResult.launch(enableBtIntent)
 
-        })
+        }
 
-        //Bluetooth Connect/Disconnect Event
-        viewModel.connected.observe(this, {
+        // Bluetooth Connect/Disconnect Event
+        viewModel.connected.observe(this) {
             if (it != null) {
                 if (it) {
                     viewModel.setInProgress(false)
@@ -85,38 +85,32 @@ class MainActivity : AppCompatActivity() {
                     Util.showNotification("디바이스와 연결이 해제되었습니다.")
                 }
             }
-        })
+        }
 
-        //Bluetooth Connect Error
-        viewModel.connectError.observe(this, {
+        // Bluetooth Connect Error
+        viewModel.connectError.observe(this) {
             Util.showNotification("Connect Error. Please check the device")
             viewModel.setInProgress(false)
-        })
+        }
 
-        //Data Receive
-        viewModel.putTxt.observe(this, {
-            if (it != null) {
-                recv += it
-                sv_read_data.fullScroll(View.FOCUS_DOWN)
-                viewModel.txtRead.set(recv)
-            }
-        })
     }
+
     private fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {
         for (permission in permissions) {
             if (context?.let { ActivityCompat.checkSelfPermission(it, permission) }
-                    != PackageManager.PERMISSION_GRANTED
+                != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
         }
         return true
     }
+
     // Permission check
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String?>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -137,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.txtRead.set("here you can see the message come")
     }
 
-    override fun onPause(){
+    override fun onPause() {
         super.onPause()
         viewModel.unregisterReceiver()
     }
