@@ -5,9 +5,18 @@
       <map>
         <entry key="..\:/Users/fools/Desktop/BluetoothClassic_MVVM-main/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.18009118541033434" />
         <entry key="..\:/Users/fools/Documents/GitHub/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
-        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.5536458333333333" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_log.xml" value="0.31302083333333336" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.38722826086956524" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/fragment_chart.xml" value="0.40989583333333335" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/fragment_home.xml" value="0.40989583333333335" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/fragment_log.xml" value="0.40989583333333335" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/fragment_setting.xml" value="0.3953125" />
+        <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/menu/navi_menu.xml" value="0.13663194444444443" />
       </map>
     </option>
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lilly/bluetoothclassic/log/LogActivity.kt" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
