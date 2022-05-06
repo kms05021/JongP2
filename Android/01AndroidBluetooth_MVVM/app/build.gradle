@@ -36,6 +36,9 @@ android {
     dataBinding {
         enabled = true
     }
+    buildFeatures {
+        viewBinding true
+    }
 
 }
 
@@ -65,4 +68,10 @@ dependencies {
     // Room DB
     implementation "androidx.room:room-runtime:2.3.0"
     kapt "androidx.room:room-compiler:2.3.0"
+
+    // ViewPager 2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // for Chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

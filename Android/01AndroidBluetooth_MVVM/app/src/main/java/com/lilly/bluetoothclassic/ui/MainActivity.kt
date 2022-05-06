@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.databinding.ActivityMainBinding
+import com.lilly.bluetoothclassic.log.LogActivity
 import com.lilly.bluetoothclassic.util.*
 import com.lilly.bluetoothclassic.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -139,6 +140,15 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         //super.onBackPressed()
         viewModel.setInProgress(false)
+    }
+
+    fun onClickMethod(v : View) {
+        when(v.id) {
+            R.id.logLayout -> {
+                val nextIntent = Intent(this, LogActivity::class.java)
+                startActivity(nextIntent)
+            }
+        }
     }
 
 }

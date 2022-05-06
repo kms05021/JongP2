@@ -1,57 +1,41 @@
 package com.lilly.bluetoothclassic.log
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.room.Room
-import com.lilly.bluetoothclassic.R
-import java.time.LocalDate
-import java.time.LocalTime
+import com.lilly.bluetoothclassic.fragment.PagerFragmentStateAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.lilly.bluetoothclassic.databinding.ActivityLogBinding
 
-class LogActivity : AppCompatActivity(), View.OnClickListener {
-    lateinit var db: LogDB
-    lateinit var textLevel1 : TextView
-    lateinit var textLevel2 : TextView
-    lateinit var textLevel3 : TextView
+class LogActivity : AppCompatActivity() {
+    lateinit var binding: ActivityLogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log)
+        binding = ActivityLogBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        db = Room.databaseBuilder(this, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
-
-        textLevel1 = findViewById(R.id.textLevel1)
-        textLevel2 = findViewById(R.id.textLevel2)
-        textLevel3 = findViewById(R.id.textLevel3)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onClick(v : View?){
-        val onlyDate: LocalDate = LocalDate.now()
-        val onlyTime: LocalTime = LocalTime.now()
-
-        when(v?.id) {
-            R.id.btnLevel1 -> {
-                db.getDao().insertLog(LogEntity(onlyDate, onlyTime, 1))
+        // 탭 설정
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
             }
-            R.id.btnLevel2 -> {
-                db.getDao().insertLog(LogEntity(onlyDate, onlyTime, 2))
-            }
-            R.id.btnLevel3 -> {
-                db.getDao().insertLog(LogEntity(onlyDate, onlyTime, 3))
-            }
-            R.id.btnUpdate -> {
-                var list1: List<LogEntity> = db.getDao().getByLevelAndDateAndTime(1, onlyDate.minusDays(1), onlyDate)
-                var list2: List<LogEntity> = db.getDao().getByLevelAndDateAndTime(2, onlyDate.minusDays(1), onlyDate)
-                var list3: List<LogEntity> = db.getDao().getByLevelAndDateAndTime(3, onlyDate.minusDays(1), onlyDate)
 
-                textLevel1.text = list1.size.toString()
-                textLevel2.text = list2.size.toString()
-                textLevel3.text = list3.size.toString()
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
-        }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+        // 뷰페이지 어댑터 연결
+        binding.viewPager.adapter = PagerFragmentStateAdapter(this)
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) {tab, position ->
+            when (position) {
+                0 -> tab.text = "Daily"
+                1 -> tab.text = "Week"
+                2 -> tab.text = "Month"
+            }
+        }.attach()
     }
 }

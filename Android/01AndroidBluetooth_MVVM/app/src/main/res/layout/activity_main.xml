@@ -60,10 +60,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:id="@+id/logLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
+            android:onClick="onClickMethod"
             android:clickable="true"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
