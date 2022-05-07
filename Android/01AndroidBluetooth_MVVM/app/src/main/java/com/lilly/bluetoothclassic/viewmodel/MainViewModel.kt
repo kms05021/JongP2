@@ -7,7 +7,7 @@ import com.lilly.bluetoothclassic.Repository
 import com.lilly.bluetoothclassic.util.*
 import java.nio.charset.Charset
 
-class MainViewModel(private val repository: Repository): ViewModel() {
+class MainViewModel(private val repository: Repository) : ViewModel() {
 
     val connected: LiveData<Boolean?>
         get() = repository.connected
@@ -33,27 +33,27 @@ class MainViewModel(private val repository: Repository): ViewModel() {
     val putTxt: LiveData<String>
         get() = repository.putTxt
 
-    fun setInProgress(en: Boolean){
+    fun setInProgress(en: Boolean) {
         repository.inProgress.value = Event(en)
     }
-    fun onClickConnect(){
-        if(connected.value==false || connected.value == null){
+
+    fun onClickConnect() {
+        if (connected.value == false || connected.value == null) {
             if (repository.isBluetoothSupport()) {   // 블루투스 지원 체크
-                if(repository.isBluetoothEnabled()){ // 블루투스 활성화 체크
+                if (repository.isBluetoothEnabled()) { // 블루투스 활성화 체크
                     //Progress Bar
                     setInProgress(true)
                     //디바이스 스캔 시작
                     repository.scanDevice()
-                }else{
+                } else {
                     // 블루투스를 지원하지만 비활성 상태인 경우
                     // 블루투스를 활성 상태로 바꾸기 위해 사용자 동의 요청
                     _requestBleOn.value = Event(true)
                 }
-            }
-            else{ //블루투스 지원 불가
+            } else { //블루투스 지원 불가
                 Util.showNotification("Bluetooth is not supported.")
             }
-        }else{
+        } else {
             repository.disconnect()
         }
     }
@@ -64,8 +64,7 @@ class MainViewModel(private val repository: Repository): ViewModel() {
             repository.sendByteData(startSignal)
             /* ACK 수신 */
             onStart.set(true)
-        }
-        else{ // 측정 중지
+        } else { // 측정 중지
             val stopSignal = "CMD_STOP".toByteArray(Charset.defaultCharset())
             repository.sendByteData(stopSignal)
             /* ACK 수신 */
@@ -73,18 +72,13 @@ class MainViewModel(private val repository: Repository): ViewModel() {
         }
     }
 
-    fun unregisterReceiver(){
+    fun unregisterReceiver() {
         repository.unregisterReceiver()
     }
 
-    fun onClickSendData(sendTxt: String){
+    fun onClickSendData(sendTxt: String) {
         val byteArr = sendTxt.toByteArray(Charset.defaultCharset())
         repository.sendByteData(byteArr)
         Util.showNotification("send data!")
     }
-
-
-
-
-
 }

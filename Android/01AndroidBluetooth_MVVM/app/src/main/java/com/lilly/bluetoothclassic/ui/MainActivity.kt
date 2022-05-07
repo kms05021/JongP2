@@ -94,6 +94,14 @@ class MainActivity : AppCompatActivity() {
             viewModel.setInProgress(false)
         }
 
+        // Data Receive
+        viewModel.putTxt.observe(this) {
+            if (it != null) {
+                recv += it
+                sv_read_data.fullScroll(View.FOCUS_DOWN)
+                viewModel.txtRead.set(recv)
+            }
+        }
     }
 
     private fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {
@@ -142,8 +150,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.setInProgress(false)
     }
 
-    fun onClickMethod(v : View) {
-        when(v.id) {
+    fun onClickMethod(v: View) {
+        when (v.id) {
             R.id.logLayout -> {
                 val nextIntent = Intent(this, LogActivity::class.java)
                 startActivity(nextIntent)

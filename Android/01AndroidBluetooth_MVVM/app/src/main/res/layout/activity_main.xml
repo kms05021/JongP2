@@ -68,7 +68,6 @@
             android:onClick="onClickMethod"
             android:clickable="true"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_connect">
 
             <TextView
@@ -92,6 +91,23 @@
                 android:textAlignment="center"
                 android:textSize="30sp" />
         </LinearLayout>
+
+        <ScrollView
+            app:layout_constraintTop_toBottomOf="@id/logLayout"
+            android:id="@+id/sv_read_data"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <TextView
+                android:layout_margin="10dp"
+                android:textColor="@color/black"
+                android:id="@+id/txt_read"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.txtRead}"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

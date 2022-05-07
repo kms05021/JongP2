@@ -35,31 +35,33 @@ class Repository {
     var mOutputStream: OutputStream? = null
     var mInputStream: InputStream? = null
 
-    var foundDevice:Boolean = false
+    var foundDevice: Boolean = false
 
-    private lateinit var sendByte:ByteArray
+    private lateinit var sendByte: ByteArray
     var discovery_error = false
 
-    fun isBluetoothSupport():Boolean{
-        return if(mBluetoothAdapter==null) {
+    /* 모바일 기기 블루투스 지원 유무 확인 */
+    fun isBluetoothSupport(): Boolean {
+        return if (mBluetoothAdapter == null) {
             Util.showNotification("Bluetooth 지원을 하지 않는 기기입니다.")
             false
-        }else{
+        } else {
             true
         }
     }
-    fun isBluetoothEnabled():Boolean{
+
+    fun isBluetoothEnabled(): Boolean {
         return if (!mBluetoothAdapter!!.isEnabled) {
             // 블루투스를 지원하지만 비활성 상태인 경우
             // 블루투스를 활성 상태로 바꾸기 위해 사용자 동의 요청
-            Util.showNotification("Bluetooth를 활성화 해 주세요.")
+            Util.showNotification("Bluetooth 를 활성화 해 주세요.")
             false
-        }else{
+        } else {
             true
         }
     }
-    
-    fun scanDevice(){
+
+    fun scanDevice() {
         progressState.postValue("device 스캔 중...")
 
         registerBluetoothReceiver()
@@ -68,7 +70,8 @@ class Repository {
         foundDevice = false
         bluetoothAdapter?.startDiscovery() //블루투스 기기 검색 시작
     }
-    fun registerBluetoothReceiver(){
+
+    fun registerBluetoothReceiver() {
         //intentfilter
         val stateFilter = IntentFilter()
         stateFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED) //BluetoothAdapter.ACTION_STATE_CHANGED : 블루투스 상태변화 액션
@@ -80,16 +83,18 @@ class Repository {
         stateFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED) //기기 검색 시작
         stateFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED) //기기 검색 종료
         stateFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
+
         mBluetoothStateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 val action = intent.action //입력된 action
                 if (action != null) {
                     Log.d("Bluetooth action", action)
                 }
-                val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                val device =
+                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 var name: String? = null
                 if (device != null) {
-                    name = device.name //broadcast를 보낸 기기의 이름을 가져온다.
+                    name = device.name // broadcast를 보낸 기기의 이름을 가져온다.
                 }
                 when (action) {
                     BluetoothAdapter.ACTION_STATE_CHANGED -> {
@@ -126,7 +131,7 @@ class Repository {
                             Log.d("Repository : ", "LOG --------- FOUND DEVICE " + device_name)
 
                             // It only searches for devices with the prefix "RNM" in the Bluetooth device name.
-                            if (device_name == "HC-06") {
+                            if (device_name == "Ryu") {
                                 // filter your targetDevice and use connectToTargetedDevice()
                                 targetDevice = device
                                 foundDevice = true
@@ -150,7 +155,6 @@ class Repository {
         )
 
     }
-
 
     @ExperimentalUnsignedTypes
     private fun connectToTargetedDevice(targetedDevice: BluetoothDevice?) {
@@ -176,7 +180,7 @@ class Repository {
 
             } catch (e: java.lang.Exception) {
                 // 블루투스 연결 중 오류 발생
-                    e.printStackTrace()
+                e.printStackTrace()
                 connectError.postValue(Event(true))
                 try {
                     socket?.close()
@@ -191,7 +195,7 @@ class Repository {
     }
 
 
-    fun disconnect(){
+    fun disconnect() {
         try {
             socket?.close()
             connected.postValue(false)
@@ -199,8 +203,9 @@ class Repository {
             e.printStackTrace()
         }
     }
-    fun unregisterReceiver(){
-        if(mBluetoothStateReceiver!=null) {
+
+    fun unregisterReceiver() {
+        if (mBluetoothStateReceiver != null) {
             MyApplication.applicationContext().unregisterReceiver(mBluetoothStateReceiver)
             mBluetoothStateReceiver = null
         }
@@ -226,6 +231,7 @@ class Repository {
      * @byteArrayToHex : byte[] -> hex string
      */
     private val m_ByteBuffer: ByteBuffer = ByteBuffer.allocateDirect(8)
+
     // byte -> uint
     fun ByteToUint(data: ByteArray?, offset: Int, endian: ByteOrder): Long {
         synchronized(m_ByteBuffer) {
@@ -268,7 +274,7 @@ class Repository {
                             /**
                              * 한 버퍼 처리
                              */
-                            val s = String(packetBytes,Charsets.UTF_8)
+                            val s = String(packetBytes, Charsets.UTF_8)
                             putTxt.postValue(s)
 
                             /**
