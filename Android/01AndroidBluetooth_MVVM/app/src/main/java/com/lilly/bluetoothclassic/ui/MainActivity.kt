@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -108,18 +109,26 @@ class MainActivity : AppCompatActivity() {
                 sv_read_data.fullScroll(View.FOCUS_DOWN)
                 viewModel.txtRead.set(recv)
 
-                when (recv)
+                Log.d("LOG", it)
+                if (it.length >= 6)
                 {
-                    "LEVEL1" -> {
-                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
-                    }
-                    "LEVEL2" -> {
-                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
-                    }
-                    "LEVEL3" -> {
-                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
+                    when (it.substring(0,6))
+                    {
+                        "LEVEL1" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
+                            Log.d("DB", "LEVEL1 SUCCESS")
+                        }
+                        "LEVEL2" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
+                            Log.d("DB", "LEVEL2 SUCCESS")
+                        }
+                        "LEVEL3" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
+                            Log.d("DB", "LEVEL3 SUCCESS")
+                        }
                     }
                 }
+
             }
         }
     }
