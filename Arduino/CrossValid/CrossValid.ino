@@ -112,7 +112,7 @@ void  loop()
   //bluetooth.println((float)WindSpeed_MPH);
 
   // Wind Check
-  if(WindSpeed_MPH < 1 || isnan(WindSpeed_MPH))
+  if(WindSpeed_MPH < 2 || isnan(WindSpeed_MPH))
   {
     inBoundW = 0;
   }
@@ -168,7 +168,6 @@ void  loop()
     {
       if(isCountingW)
       {
-        bluetooth.println("OK");
         isCountingW = 0;
         startTime = curTime = 0;
         validVibe = 0;
