@@ -1,10 +1,15 @@
 #include <SoftwareSerial.h>
+// Wind MACRO
 #define Alert 10000
-#define Warning 20000
-#define Emergency 30000
+#define Warning 15000
+#define Emergency 20000
 
+// Bluetooth global var
 const int pinTx = 7;  // 블루투스 TX 연결 핀 번호
 const int pinRx = 6;  // 블루투스 RX 연결 핀 번호
+SoftwareSerial   bluetooth( pinTx, pinRx );
+
+// Wind global var
 const float zeroWindAdjustment =  .2; // negative numbers yield smaller wind speeds and vice versa.
 int TMP_Therm_ADunits;  //temp termistor value from wind sensor
 float RV_Wind_ADunits;    //RV output from wind sensor 
@@ -14,14 +19,16 @@ int TempCtimes100;
 float zeroWind_ADunits;
 float zeroWind_volts;
 float WindSpeed_MPH;
-SoftwareSerial   bluetooth( pinTx, pinRx );
 
-int inBound = 1;
-int isCounting = 0;
+int inBoundW = 1;
+int isCountingW = 0;
 int validVibe = 0;
 int validAlarm = 0;
 int validCall = 0;
+int noWind = 0;
 
+
+// Delta Time var
 unsigned long startTime=0;
 unsigned long curTime=0;
 
@@ -30,11 +37,15 @@ void  setup()
 {
   bluetooth.begin(9600);  // 블루투스 통신 초기화 (속도= 9600 bps)
   Serial.begin(9600);
+
 }
  
  
 void  loop()
 {
+  accel.update();
+  int myAccel = accel.x() + accel.y()+ accel.z();
+  
   // 블루투스 수신 
   if ( bluetooth.available() ) 
   {
@@ -65,30 +76,33 @@ void  loop()
   //Serial.print(TempCtimes100 );
   //Serial.print("   ZeroWind volts ");
   //Serial.print(zeroWind_volts);
-  Serial.print("   WindSpeed MPH ");
-  Serial.println((float)WindSpeed_MPH);
+  //Serial.print("   WindSpeed MPH ");
+  //Serial.println((float)WindSpeed_MPH);
   //bluetooth.println((float)WindSpeed_MPH);
 
+  // Wind Check
   if(WindSpeed_MPH < 2 || isnan(WindSpeed_MPH))
   {
-    inBound = 0;
+    inBoundW = 0;
   }
   else
   {
-    inBound = 1;
+    inBoundW = 1;
   }
 
-  if(!inBound)
+  if(!inBoundW)
     {
-      if(isCounting)
+      if(isCountingW)
       {
         curTime = millis();
         if(curTime - startTime >= Alert && curTime - startTime < Warning)
         {
           if(validVibe==0)
           {
-            bluetooth.println("Vibration!!");
-            validVibe=1;      
+            bluetooth.println("LEVEL1");
+            Serial.println("Vibration!!");
+            validVibe=1;
+            noWind = 1;
           }
 
         }
@@ -96,35 +110,39 @@ void  loop()
         {
           if(validAlarm==0)
           {
-            bluetooth.println("Alarm!!");
-            validAlarm=1;          
+            bluetooth.println("LEVEL2");
+            Serial.println("Alarm!!");
+            validAlarm=1;
+            noWind = 1;
           }
         }
         else if(curTime - startTime >= Emergency)
         {
           if(validCall==0)
           {
-            bluetooth.println("Call!!");
-            validCall=1;          
+            bluetooth.println("LEVEL3");
+            Serial.println("Call!!");
+            validCall=1;
+            noWind = 1;
           }
         }
       }
       else
       {
-        isCounting = 1;
+        isCountingW = 1;
         startTime = millis();
       }
     }
     else
     {
-      if(isCounting)
+      if(isCountingW)
       {
-        isCounting = 0;
+        isCountingW = 0;
         startTime = curTime = 0;
         validVibe = 0;
         validAlarm = 0;
         validCall = 0;
+        noWind = 0;
       }
     }
-
 }
