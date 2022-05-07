@@ -13,13 +13,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.room.Room
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.databinding.ActivityMainBinding
 import com.lilly.bluetoothclassic.log.LogActivity
+import com.lilly.bluetoothclassic.log.LogDB
+import com.lilly.bluetoothclassic.log.LogEntity
 import com.lilly.bluetoothclassic.util.*
 import com.lilly.bluetoothclassic.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalDate
+import java.time.LocalTime
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    lateinit var db : LogDB
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
 
@@ -48,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
         }
 
+        db = Room.databaseBuilder(this, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
         initObserving()
     }
 
@@ -100,6 +107,19 @@ class MainActivity : AppCompatActivity() {
                 recv += it
                 sv_read_data.fullScroll(View.FOCUS_DOWN)
                 viewModel.txtRead.set(recv)
+
+                when (recv)
+                {
+                    "LEVEL1" -> {
+                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
+                    }
+                    "LEVEL2" -> {
+                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
+                    }
+                    "LEVEL3" -> {
+                        db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
+                    }
+                }
             }
         }
     }
