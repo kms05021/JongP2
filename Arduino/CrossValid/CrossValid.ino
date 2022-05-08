@@ -5,7 +5,7 @@
 #define Emergency 15000
 // Rubber band MACRO
 #define BUFFERSIZE 50
-#define TOLERANCE 0.98
+#define TOLERANCE 0.988
 #define ALERTTIME 5000
 #define WARNINGTIME 10000
 #define EMERGENCYTIME 15000
@@ -296,18 +296,20 @@ void  loop()
       launchTime = millis();  
     }
   }
-  if(noWind == 1 && lowMovement == 1)
+  if((noWind == 1 && lowMovement >= 1)||(noWind >= 1 && lowMovement == 1))
   {
     if(flag1==0)
     {
       bluetooth.println("LEVEL1");
+      flag1=1;
     }
   }
-  else if(noWind == 2 && lowMovement == 2)
+  else if((noWind == 2 && lowMovement >= 2)||(noWind >= 2 && lowMovement == 2))
   {
     if(flag2==0)
     {
       bluetooth.println("LEVEL2");
+      flag2=1;
     }
   }
   else if(noWind == 3 && lowMovement == 3)
@@ -315,6 +317,7 @@ void  loop()
     if(flag3==0)
     {
       bluetooth.println("LEVEL3");
+      flag3=1;
     }
   }
   else
