@@ -27,24 +27,46 @@ int validAlarm = 0;
 int validCall = 0;
 int noWind = 0;
 
+String myString = "";
 
 // Delta Time var
 unsigned long startTime=0;
 unsigned long curTime=0;
 
+// Reset Function
+void resetFunc()
+{
+  asm volatile ("jmp 0");
+}
  
 void  setup()
 {
   bluetooth.begin(9600);  // 블루투스 통신 초기화 (속도= 9600 bps)
   Serial.begin(9600);
+  while(1)
+  {
+    while(bluetooth.available())  //mySerial에 전송된 값이 있으면
+    {
+      char myChar = (char)bluetooth.read();  //mySerial int 값을 char 형식으로 변환
+      myString+=myChar;   //수신되는 문자를 myString에 모두 붙임 (1바이트씩 전송되는 것을 연결)
+      delay(10);           //수신 문자열 끊김 방지
+    }
+    if(!myString.equals(""))  //myString 값이 있다면
+    {
+      Serial.println("input value: "+myString); //시리얼모니터에 myString값 출력
+      if(myString.equals("START"))
+      {
+        myString="";  //myString 변수값 초기화
+        break;
+      }
+    }
 
+  }
 }
  
  
 void  loop()
 {
-  accel.update();
-  int myAccel = accel.x() + accel.y()+ accel.z();
   
   // 블루투스 수신 
   if ( bluetooth.available() ) 
@@ -80,6 +102,23 @@ void  loop()
   //Serial.println((float)WindSpeed_MPH);
   //bluetooth.println((float)WindSpeed_MPH);
 
+  // STOP Check
+    while(bluetooth.available())  //mySerial에 전송된 값이 있으면
+    {
+      char myChar = (char)bluetooth.read();  //mySerial int 값을 char 형식으로 변환
+      myString+=myChar;   //수신되는 문자를 myString에 모두 붙임 (1바이트씩 전송되는 것을 연결)
+      delay(10);           //수신 문자열 끊김 방지
+    }
+    if(!myString.equals(""))  //myString 값이 있다면
+    {
+      Serial.println("input value: "+myString); //시리얼모니터에 myString값 출력
+      if(myString.equals("STOP"))
+      {
+        myString="";  //myString 변수값 초기화
+        resetFunc();
+      }
+    }
+  
   // Wind Check
   if(WindSpeed_MPH < 2 || isnan(WindSpeed_MPH))
   {
