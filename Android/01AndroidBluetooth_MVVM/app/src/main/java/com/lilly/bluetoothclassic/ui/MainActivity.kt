@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -29,7 +30,11 @@ import com.lilly.bluetoothclassic.util.*
 import com.lilly.bluetoothclassic.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+import com.lilly.bluetoothclassic.log.LogDB
+import com.lilly.bluetoothclassic.log.LogEntity
+import androidx.room.Room
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModel<MainViewModel>()
@@ -41,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    lateinit var db : LogDB
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
 
@@ -57,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         if (!hasPermissions(this, PERMISSIONS)) {
             requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
         }
-
+        db = Room.databaseBuilder(this, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
         initObserving()
     }
 
@@ -114,6 +120,29 @@ class MainActivity : AppCompatActivity() {
                 recv += it
                 sv_read_data.fullScroll(View.FOCUS_DOWN)
                 viewModel.txtRead.set(recv)
+
+                Log.d("LOG", it)
+                if (it.length >= 6)
+                {
+                    when (it.substring(0,6))
+                    {
+                        "LEVEL1" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
+                            Log.d("DB", "LEVEL1 SUCCESS")
+                            startVibration()
+                        }
+                        "LEVEL2" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
+                            Log.d("DB", "LEVEL2 SUCCESS")
+                        }
+                        "LEVEL3" -> {
+                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
+                            Log.d("DB", "LEVEL3 SUCCESS")
+                            call()
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -130,7 +159,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun call() {
-        val telNumber = "01087602581" // 전역으로 바꿔서 setting으로 번호 바꾸게 하기
+        val telNumber = "01094149314" // 전역으로 바꿔서 setting으로 번호 바꾸게 하기
 
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
@@ -151,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             .check()
     }
 
-    /*private fun startVibration() {
+    private fun startVibration() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         when {
@@ -165,7 +194,7 @@ class MainActivity : AppCompatActivity() {
                 val effect = VibrationEffect.createWaveform(timing, amplitudes, 0)
                 vibrator.vibrate(effect)
             }
-            else -> {
+            /*else -> {
                 val vibratorManager: VibratorManager by lazy {
                     getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                 }
@@ -174,24 +203,26 @@ class MainActivity : AppCompatActivity() {
                 val vibrationEffect = VibrationEffect.createWaveform(timing, amplitudes, 0)
                 val combinedVibration = CombinedVibration.createParallel(vibrationEffect)
                 vibratorManager.vibrate(combinedVibration)
-            }
+            }*/
         }
+        Thread.sleep(5000)
+        stopVibration()
     }
 
     private fun stopVibration() {
-        when {
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> {
+//        when {
+//            Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> {
                 val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                 vibrator.cancel()
-            }
-            else -> {
+//            }
+            /*else -> {
                 val vibratorManager: VibratorManager by lazy {
                     getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                 }
                 vibratorManager.cancel()
-            }
-        }
-    }*/
+            }*/
+//        }
+    }
 
     // Permission check
     override fun onRequestPermissionsResult(
