@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.gun0912.tedpermission.PermissionListener
@@ -84,14 +86,17 @@ class MainActivity : AppCompatActivity() {
         // Bluetooth Connect/Disconnect Event
         viewModel.connected.observe(this) {
             if (it != null) {
+                val btnStart = findViewById<AppCompatButton>(R.id.btn_start)
                 if (it) {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(true)
+                    btnStart.setBackgroundResource(R.drawable.button_circle)
                     Util.showNotification("디바이스와 연결되었습니다.")
                 } else {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
                     viewModel.onStart.set(false)
+                    btnStart.setBackgroundResource(R.drawable.button_circle_gray)
                     Util.showNotification("디바이스와 연결이 해제되었습니다.")
                 }
             }

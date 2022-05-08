@@ -64,7 +64,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/button_circle"
+            android:background="@drawable/button_circle_gray"
             android:onClick="@{()->viewModel.onClickStart()}"
             android:clickable="@{viewModel.btnConnected?true:false}"
             android:text="@{viewModel.onStart?@string/stop:@string/start}"
