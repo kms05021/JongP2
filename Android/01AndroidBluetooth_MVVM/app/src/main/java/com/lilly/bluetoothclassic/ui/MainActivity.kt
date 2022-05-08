@@ -13,6 +13,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -92,17 +93,17 @@ class MainActivity : AppCompatActivity() {
         // Bluetooth Connect/Disconnect Event
         viewModel.connected.observe(this) {
             if (it != null) {
-                val btnStart = findViewById<AppCompatButton>(R.id.btn_start)
+                val btnStart = findViewById<ImageButton>(R.id.btn_start)
                 if (it) {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(true)
-                    btnStart.setBackgroundResource(R.drawable.button_circle)
+                    btnStart.isEnabled = true
                     Util.showNotification("디바이스와 연결되었습니다.")
                 } else {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
                     viewModel.onStart.set(false)
-                    btnStart.setBackgroundResource(R.drawable.button_circle_gray)
+                    btnStart.isEnabled = false
                     Util.showNotification("디바이스와 연결이 해제되었습니다.")
                 }
             }
@@ -261,10 +262,15 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickMethod(v: View) {
         when (v.id) {
-            R.id.logLayout -> {
+            R.id.logIcon -> {
                 val nextIntent = Intent(this, LogActivity::class.java)
                 startActivity(nextIntent)
             }
+            /*
+            * R.id.settingIcon -> {
+            *
+            * }
+            * */
         }
     }
 

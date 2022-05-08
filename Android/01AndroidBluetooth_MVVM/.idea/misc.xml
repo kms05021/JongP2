@@ -4,8 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.12635869565217392" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/background_gradient.xml" value="0.1" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/background_radius.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_back2.xml" value="0.1" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_circle.xml" value="0.1" />
         <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_circle_gray.xml" value="0.1415" />
-        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.17481884057971014" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_circle_white.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_rectangle.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_setting.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/ic_baseline_stop_24.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/shadow.xml" value="0.1415" />
+        <entry key="..\:/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/fools/Desktop/BluetoothClassic_MVVM-main/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.18009118541033434" />
         <entry key="..\:/Users/fools/Documents/GitHub/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/fools/OneDrive/Documents/GH/Project/Github/JongP2/Android/01AndroidBluetooth_MVVM/app/src/main/res/drawable/button_back.xml" value="0.4505" />

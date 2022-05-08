@@ -13,102 +13,128 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/background_gradient">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="100dp"
-            android:background="@drawable/round_background_black_trans"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:visibility="@{viewModel.inProgressView?View.VISIBLE:View.GONE}"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_radius"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ProgressBar
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:indeterminateTint="@color/white" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_connect"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/button_rectangle"
+                android:onClick="@{()->viewModel.onClickConnect()}"
+                android:text="@{viewModel.btnConnected?@string/disconnect:@string/connect}"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <ImageButton
+                android:id="@+id/btn_start"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/button_circle"
+                android:clickable="@{viewModel.btnConnected?true:false}"
+                android:onClick="@{()->viewModel.onClickStart()}"
+                android:scaleType="fitXY"
+                android:src="@{viewModel.onStart?@drawable/ic_baseline_stop_24:@drawable/ic_baseline_play_arrow_24}"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_connect" />
+
+
+            <LinearLayout
+                android:id="@+id/logLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageButton
+                    android:id="@+id/logIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/button_circle_white"
+                    android:elevation="8dp"
+                    android:onClick="onClickMethod"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_chart_png" />
+
+                <ImageButton
+                    android:id="@+id/settingIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/button_circle_white"
+                    android:elevation="8dp"
+                    android:onClick="onClickMethod"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_setting_png" />
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/sv_read_data"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toBottomOf="@id/btn_start">
+
+                <TextView
+                    android:id="@+id/txt_read"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@{viewModel.txtRead}"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </ScrollView>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@{viewModel.txtProgress}"
-                android:textColor="@color/white" />
-        </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="100dp"
+                android:background="@drawable/round_background_black_trans"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="@{viewModel.inProgressView?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_connect"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="100dp"
-            android:background="@drawable/button_circle"
-            android:onClick="@{()->viewModel.onClickConnect()}"
-            android:text="@{viewModel.btnConnected?@string/disconnect:@string/connect}"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:indeterminateTint="@color/white" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_start"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_circle_gray"
-            android:onClick="@{()->viewModel.onClickStart()}"
-            android:clickable="@{viewModel.btnConnected?true:false}"
-            android:text="@{viewModel.onStart?@string/stop:@string/start}"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_connect" />
-
-        <LinearLayout
-            android:id="@+id/logLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="50dp"
-            android:onClick="onClickMethod"
-            android:clickable="true"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/btn_start">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="text1"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-        </LinearLayout>
-
-        <ScrollView
-            app:layout_constraintTop_toBottomOf="@id/logLayout"
-            android:id="@+id/sv_read_data"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-            <TextView
-                android:layout_margin="10dp"
-                android:textColor="@color/black"
-                android:id="@+id/txt_read"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.txtRead}"
-                android:textStyle="bold"
-                android:textSize="15sp"/>
-        </ScrollView>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@{viewModel.txtProgress}"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
