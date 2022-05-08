@@ -1,8 +1,8 @@
 #include <SoftwareSerial.h>
 // Wind MACRO
-#define Alert 10000
-#define Warning 15000
-#define Emergency 20000
+#define Alert 5000
+#define Warning 10000
+#define Emergency 15000
 
 // Bluetooth global var
 const int pinTx = 7;  // 블루투스 TX 연결 핀 번호
