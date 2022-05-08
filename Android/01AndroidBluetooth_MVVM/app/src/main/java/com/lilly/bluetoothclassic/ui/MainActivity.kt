@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
+                    viewModel.onStart.set(false)
                     Util.showNotification("디바이스와 연결이 해제되었습니다.")
                 }
             }

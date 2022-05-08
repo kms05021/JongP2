@@ -59,35 +59,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_start"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_circle"
+            android:onClick="@{()->viewModel.onClickStart()}"
+            android:clickable="@{viewModel.btnConnected?true:false}"
+            android:text="@{viewModel.onStart?@string/stop:@string/start}"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_connect" />
+
         <LinearLayout
             android:id="@+id/logLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="50dp"
             android:onClick="onClickMethod"
             android:clickable="true"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/btn_connect">
+            app:layout_constraintTop_toBottomOf="@id/btn_start">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="text1"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="text2"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="text3"
                 android:textAlignment="center"
                 android:textSize="30sp" />
         </LinearLayout>

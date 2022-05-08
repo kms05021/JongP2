@@ -60,12 +60,12 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun onClickStart() {
         if (!onStart.get()) { // 블루투스 측정 시작
-            val startSignal = "CMD_START".toByteArray(Charset.defaultCharset())
+            val startSignal = "START".toByteArray(Charset.defaultCharset())
             repository.sendByteData(startSignal)
             /* ACK 수신 */
             onStart.set(true)
         } else { // 측정 중지
-            val stopSignal = "CMD_STOP".toByteArray(Charset.defaultCharset())
+            val stopSignal = "STOP".toByteArray(Charset.defaultCharset())
             repository.sendByteData(stopSignal)
             /* ACK 수신 */
             onStart.set(false)
