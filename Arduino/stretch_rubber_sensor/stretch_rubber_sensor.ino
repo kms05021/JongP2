@@ -1,6 +1,7 @@
+
 #define BUFFERSIZE 50
-#define TOLERANCE 0.9
-#define WARNINGTIME 5000
+#define TOLERANCE 0.98
+#define WARNINGTIME 10000
 
 int rubberValues[BUFFERSIZE] = {0,};
 int lastIndex = 0;
