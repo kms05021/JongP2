@@ -6,7 +6,9 @@
 // Rubber band MACRO
 #define BUFFERSIZE 50
 #define TOLERANCE 0.98
+#define ALERTTIME 5000
 #define WARNINGTIME 10000
+#define EMERGENCYTIME 15000
 
 // Bluetooth global var
 const int pinTx = 7;  // 블루투스 TX 연결 핀 번호
@@ -39,12 +41,19 @@ int lastIndex = 0;
 int isCounting = 0;
 unsigned long launchTime = 0;
 unsigned long currTime = 0;
-int validBand = 0;
+int validBandV = 0;
+int validBandA = 0;
+int validBandC = 0;
 int lowMovement = 0;
 
 // Delta Time global var
 unsigned long startTime=0;
 unsigned long curTime=0;
+
+// Level Flag
+int flag1 = 0;
+int flag2 = 0;
+int flag3 = 0;
 
 // Reset Function
 void resetFunc()
@@ -157,10 +166,11 @@ void  loop()
         {
           if(validVibe==0)
           {
-            bluetooth.println("LEVEL1");
+            //bluetooth.println("LEVEL1");
             Serial.println("Vibration!!");
             validVibe=1;
             noWind = 1;
+            delay(10);
           }
 
         }
@@ -168,20 +178,22 @@ void  loop()
         {
           if(validAlarm==0)
           {
-            bluetooth.println("LEVEL2");
+            //bluetooth.println("LEVEL2");
             Serial.println("Alarm!!");
             validAlarm=1;
-            noWind = 1;
+            noWind = 2;
+            delay(10);
           }
         }
         else if(curTime - startTime >= Emergency)
         {
           if(validCall==0)
           {
-            bluetooth.println("LEVEL3");
+            //bluetooth.println("LEVEL3");
             Serial.println("Call!!");
             validCall=1;
-            noWind = 1;
+            noWind = 3;
+            delay(10);
           }
         }
       }
@@ -206,8 +218,8 @@ void  loop()
 
     // Rubber band Check
     int rubberVal = analogRead(A5);
-   Serial.print(" current: ");
-   Serial.println(rubberVal);
+   //Serial.print(" current: ");
+   //Serial.println(rubberVal);
   
    rubberValues[lastIndex] = rubberVal;
    lastIndex = (lastIndex+1) % BUFFERSIZE;
@@ -231,14 +243,38 @@ void  loop()
       if(inBound)
       {
         currTime = millis();
-        if(currTime - launchTime > WARNINGTIME)
+        if(currTime - launchTime >= ALERTTIME && currTime - launchTime < WARNINGTIME)
         {
-          if(validBand==0)
+          if(validBandV==0)
           {
-            bluetooth.println("LEVEL1_RUBBER");
-            Serial.println("NO BELLY MOVEMENT!!");
-            validBand=1;
+            //bluetooth.println("LEVEL1");
+            Serial.println("Band Vibration!!");
+            validBandV=1;
             lowMovement = 1;
+            delay(10);
+          }
+
+        }
+        else if(currTime - launchTime >= WARNINGTIME && currTime - launchTime < EMERGENCYTIME)
+        {
+          if(validBandA==0)
+          {
+            //bluetooth.println("LEVEL2");
+            Serial.println("Band Alarm!!");
+            validBandA=1;
+            lowMovement = 2;
+            delay(10);
+          }
+        }
+        else if(currTime - launchTime >= EMERGENCYTIME)
+        {
+          if(validBandC==0)
+          {
+            //bluetooth.println("LEVEL3");
+            Serial.println("Band Call!!");
+            validBandC=1;
+            lowMovement=3;
+            delay(10);
           }
         }
       }
@@ -246,7 +282,9 @@ void  loop()
       {
           isCounting = 0;
           currTime = 0;
-          validBand = 0;
+          validBandV = 0;
+          validBandA = 0;
+          validBandC = 0;
           lowMovement = 0;
       }
     }
@@ -258,8 +296,31 @@ void  loop()
       launchTime = millis();  
     }
   }
-  if(noWind & lowMovement == 1)
+  if(noWind == 1 && lowMovement == 1)
   {
-    bluetooth.println("Die......");
+    if(flag1==0)
+    {
+      bluetooth.println("LEVEL1");
+    }
+  }
+  else if(noWind == 2 && lowMovement == 2)
+  {
+    if(flag2==0)
+    {
+      bluetooth.println("LEVEL2");
+    }
+  }
+  else if(noWind == 3 && lowMovement == 3)
+  {
+    if(flag3==0)
+    {
+      bluetooth.println("LEVEL3");
+    }
+  }
+  else
+  {
+    flag1 = 0;
+    flag2 = 0;
+    flag3 = 0;
   }
 }
