@@ -5,27 +5,28 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.room.Room
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.databinding.ActivityMainBinding
 import com.lilly.bluetoothclassic.log.LogActivity
-import com.lilly.bluetoothclassic.log.LogDB
-import com.lilly.bluetoothclassic.log.LogEntity
 import com.lilly.bluetoothclassic.util.*
 import com.lilly.bluetoothclassic.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.LocalDate
-import java.time.LocalTime
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,10 +39,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    lateinit var db : LogDB
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
         }
 
-        db = Room.databaseBuilder(this, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
         initObserving()
     }
 
@@ -108,27 +108,6 @@ class MainActivity : AppCompatActivity() {
                 recv += it
                 sv_read_data.fullScroll(View.FOCUS_DOWN)
                 viewModel.txtRead.set(recv)
-
-                Log.d("LOG", it)
-                if (it.length >= 6)
-                {
-                    when (it.substring(0,6))
-                    {
-                        "LEVEL1" -> {
-                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
-                            Log.d("DB", "LEVEL1 SUCCESS")
-                        }
-                        "LEVEL2" -> {
-                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
-                            Log.d("DB", "LEVEL2 SUCCESS")
-                        }
-                        "LEVEL3" -> {
-                            db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
-                            Log.d("DB", "LEVEL3 SUCCESS")
-                        }
-                    }
-                }
-
             }
         }
     }
@@ -143,6 +122,70 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
+    private fun call() {
+        val telNumber = "01087602581" // 전역으로 바꿔서 setting으로 번호 바꾸게 하기
+
+        val permissionListener = object : PermissionListener {
+            override fun onPermissionGranted() {
+                val myUri = Uri.parse("tel:$telNumber")
+                val myIntent = Intent(Intent.ACTION_CALL, myUri)
+                startActivity(myIntent)
+            }
+
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+               Util.showNotification("전화 연결 권한이 거부되었습니다.")
+            }
+        }
+
+        TedPermission.create()
+            .setPermissionListener(permissionListener)
+            .setDeniedMessage("권한을 열어!")
+            .setPermissions(android.Manifest.permission.CALL_PHONE)
+            .check()
+    }
+
+    /*private fun startVibration() {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        when {
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> {
+                val pattern = longArrayOf(100, 200, 100, 200, 100, 200)
+                vibrator.vibrate(pattern, 0)
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                val timing = longArrayOf(100, 200, 100, 200, 100, 200)
+                val amplitudes = intArrayOf(0, 200, 0, 200, 0, 200)
+                val effect = VibrationEffect.createWaveform(timing, amplitudes, 0)
+                vibrator.vibrate(effect)
+            }
+            else -> {
+                val vibratorManager: VibratorManager by lazy {
+                    getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                }
+                val timing = longArrayOf(100, 200, 100, 200, 100, 200)
+                val amplitudes = intArrayOf(0, 200, 0, 200, 0, 200)
+                val vibrationEffect = VibrationEffect.createWaveform(timing, amplitudes, 0)
+                val combinedVibration = CombinedVibration.createParallel(vibrationEffect)
+                vibratorManager.vibrate(combinedVibration)
+            }
+        }
+    }
+
+    private fun stopVibration() {
+        when {
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> {
+                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibrator.cancel()
+            }
+            else -> {
+                val vibratorManager: VibratorManager by lazy {
+                    getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                }
+                vibratorManager.cancel()
+            }
+        }
+    }*/
 
     // Permission check
     override fun onRequestPermissionsResult(
