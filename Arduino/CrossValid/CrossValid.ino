@@ -1,30 +1,17 @@
 #include <SoftwareSerial.h>
-#include <I2C.h>
-#include <MMA8451_n0m1.h>
-// Accel MACRO
-#define BUFFERSIZE 50
-#define BOUNDARY 0.095
-#define DULATION 6000
 // Wind MACRO
-#define Alert 10000
-#define Warning 15000
-#define Emergency 20000
+#define Alert 5000
+#define Warning 10000
+#define Emergency 15000
+// Rubber band MACRO
+#define BUFFERSIZE 50
+#define TOLERANCE 0.98
+#define WARNINGTIME 10000
 
 // Bluetooth global var
 const int pinTx = 7;  // 블루투스 TX 연결 핀 번호
 const int pinRx = 6;  // 블루투스 RX 연결 핀 번호
 SoftwareSerial   bluetooth( pinTx, pinRx );
-
-// Accel global var
-MMA8451_n0m1 accel;
-int value[BUFFERSIZE]={0};
-int index=0;
-unsigned long total=0;
-unsigned long avg=0;
-int inBound = 1;
-int isCounting = 0;
-int validAccel = 0;
-int lowMovement = 0;
 
 // Wind global var
 const float zeroWindAdjustment =  .2; // negative numbers yield smaller wind speeds and vice versa.
@@ -44,38 +31,61 @@ int validAlarm = 0;
 int validCall = 0;
 int noWind = 0;
 
+String myString = "";
 
-// Delta Time var
+// Rubber band global var
+int rubberValues[BUFFERSIZE] = {0,};
+int lastIndex = 0;
+int isCounting = 0;
+unsigned long launchTime = 0;
+unsigned long currTime = 0;
+int validBand = 0;
+int lowMovement = 0;
+
+// Delta Time global var
 unsigned long startTime=0;
 unsigned long curTime=0;
 
+// Reset Function
+void resetFunc()
+{
+  asm volatile ("jmp 0");
+}
  
 void  setup()
 {
   bluetooth.begin(9600);  // 블루투스 통신 초기화 (속도= 9600 bps)
   Serial.begin(9600);
-
-  // Accel Init
-  accel.setI2CAddr(0x1C); //change your device address if necessary, default is 0x1C
-  accel.dataMode(true, 2); //enable highRes 10bit, 2g range [2g,4g,8g]
-  Serial.println("MMA8453_n0m1 library");
-  Serial.println("XYZ Data Example");
-  Serial.println("n0m1.com");
-
-  for(int i=0; i < BUFFERSIZE; i++)
+  while(1)
   {
-    accel.update();
-    value[i] = accel.x() + accel.y() + accel.z();
-    total = total + value[i];
-  }
+    while(bluetooth.available())  //mySerial에 전송된 값이 있으면
+    {
+      char myChar = (char)bluetooth.read();  //mySerial int 값을 char 형식으로 변환
+      myString+=myChar;   //수신되는 문자를 myString에 모두 붙임 (1바이트씩 전송되는 것을 연결)
+      delay(10);           //수신 문자열 끊김 방지
+    }
+    if(!myString.equals(""))  //myString 값이 있다면
+    {
+      Serial.println("input value: "+myString); //시리얼모니터에 myString값 출력
+      if(myString.equals("START"))
+      {
+        myString="";  //myString 변수값 초기화
+        break;
+      }
+    }
+    // Rubber band set up
+    for(int i = 0; i < BUFFERSIZE; i++)
+    {
+    int val = analogRead(A5);
+    rubberValues[i] = val;
+    }
 
+  }
 }
  
  
 void  loop()
 {
-  accel.update();
-  int myAccel = accel.x() + accel.y()+ accel.z();
   
   // 블루투스 수신 
   if ( bluetooth.available() ) 
@@ -111,6 +121,23 @@ void  loop()
   //Serial.println((float)WindSpeed_MPH);
   //bluetooth.println((float)WindSpeed_MPH);
 
+  // STOP Check
+    while(bluetooth.available())  //mySerial에 전송된 값이 있으면
+    {
+      char myChar = (char)bluetooth.read();  //mySerial int 값을 char 형식으로 변환
+      myString+=myChar;   //수신되는 문자를 myString에 모두 붙임 (1바이트씩 전송되는 것을 연결)
+      delay(10);           //수신 문자열 끊김 방지
+    }
+    if(!myString.equals(""))  //myString 값이 있다면
+    {
+      Serial.println("input value: "+myString); //시리얼모니터에 myString값 출력
+      if(myString.equals("STOP"))
+      {
+        myString="";  //myString 변수값 초기화
+        resetFunc();
+      }
+    }
+  
   // Wind Check
   if(WindSpeed_MPH < 2 || isnan(WindSpeed_MPH))
   {
@@ -176,69 +203,63 @@ void  loop()
         noWind = 0;
       }
     }
-    
-    // Accel Check
-    total = total - value[index];
-    value[index] = myAccel;
-    total = total + value[index];
-    index++;
-    index = index % BUFFERSIZE;
-    
-    avg = total/BUFFERSIZE;
-    //Serial.print("  avg: ");
-    //Serial.println(avg);
 
-    if(myAccel > avg * (1 - BOUNDARY) && myAccel < avg * (1 + BOUNDARY))
-    {
-      inBound = 0;
-    }
+    // Rubber band Check
+    int rubberVal = analogRead(A5);
+   Serial.print(" current: ");
+   Serial.println(rubberVal);
+  
+   rubberValues[lastIndex] = rubberVal;
+   lastIndex = (lastIndex+1) % BUFFERSIZE;
+   int maxVal = -1;
+   int minVal = 9999;
+   for(int i = 0; i < BUFFERSIZE; i++)
+   { 
+    if(rubberValues[i] > maxVal)
+      maxVal = rubberValues[i];
+    else if (rubberValues[i] < minVal)
+      minVal = rubberValues[i];
+   }
+    int inBound = 0;
+    if((float)minVal / maxVal > TOLERANCE)
+      inBound = 1;
     else
+      inBound = 0;
+  
+    if(isCounting)
     {
-      inBound = 1;  
-    }
-
-    /*inBound -> avg +- 30내 : 0
-                아니면 : 1
-
-    단위 시간 동안 계속 0 -> 뒤짐 아니면 살아있음*/
-
-
-
-    if(!inBound) // 범위내
-    {
-      if(isCounting) // 지금 카운트 중
+      if(inBound)
       {
-        curTime = accel.measure_time();
-        if(curTime - startTime >= DULATION)
+        currTime = millis();
+        if(currTime - launchTime > WARNINGTIME)
         {
-            if(validAccel==0)
-            {
-              //bluetooth.println("Low Movement!!");
-              lowMovement=1;
-              validAccel=1;
-            }
+          if(validBand==0)
+          {
+            bluetooth.println("LEVEL1_RUBBER");
+            Serial.println("NO BELLY MOVEMENT!!");
+            validBand=1;
+            lowMovement = 1;
+          }
         }
       }
-      else  // 새로 범위내에 들어옴
+      else
       {
-        isCounting = 1;
-        startTime = accel.measure_time();
-        lowMovement=0;
-        validAccel=0;
+          isCounting = 0;
+          currTime = 0;
+          validBand = 0;
+          lowMovement = 0;
       }
     }
     else
     {
-      if(isCounting)
-      {
-        isCounting = 0;
-        startTime = curTime = 0;
-      }
-    }
-
-    // Cross Check
-    if(lowMovement & noWind == 1)
+      if(inBound)
     {
-       //bluetooth.println("Die....");
+      isCounting = 1;
+      launchTime = millis();  
     }
+  }
+  if(noWind & lowMovement == 1)
+  {
+    bluetooth.println("Die......");
+  }
 }
