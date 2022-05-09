@@ -34,6 +34,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.lilly.bluetoothclassic.log.LogDB
 import com.lilly.bluetoothclassic.log.LogEntity
 import androidx.room.Room
+import com.lilly.bluetoothclassic.setting.SettingActivity
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -47,13 +48,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    lateinit var db : LogDB
+    lateinit var db: LogDB
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mContext: Context = this
 
         // view model binding
         val binding: ActivityMainBinding =
@@ -123,10 +126,8 @@ class MainActivity : AppCompatActivity() {
                 viewModel.txtRead.set(recv)
 
                 Log.d("LOG", it)
-                if (it.length >= 6)
-                {
-                    when (it.substring(0,6))
-                    {
+                if (it.length >= 6) {
+                    when (it.substring(0, 6)) {
                         "LEVEL1" -> {
                             db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 1))
                             Log.d("DB", "LEVEL1 SUCCESS")
@@ -160,7 +161,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun call() {
-        val telNumber = "01094149314" // 전역으로 바꿔서 setting으로 번호 바꾸게 하기
+        val telNumber = Util.getTelNumber()
 
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
@@ -170,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-               Util.showNotification("전화 연결 권한이 거부되었습니다.")
+                Util.showNotification("전화 연결 권한이 거부되었습니다.")
             }
         }
 
@@ -213,15 +214,15 @@ class MainActivity : AppCompatActivity() {
     private fun stopVibration() {
 //        when {
 //            Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> {
-                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibrator.cancel()
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.cancel()
 //            }
-            /*else -> {
-                val vibratorManager: VibratorManager by lazy {
-                    getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                }
-                vibratorManager.cancel()
-            }*/
+        /*else -> {
+            val vibratorManager: VibratorManager by lazy {
+                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            }
+            vibratorManager.cancel()
+        }*/
 //        }
     }
 
@@ -266,11 +267,11 @@ class MainActivity : AppCompatActivity() {
                 val nextIntent = Intent(this, LogActivity::class.java)
                 startActivity(nextIntent)
             }
-            /*
-            * R.id.settingIcon -> {
-            *
-            * }
-            * */
+
+            R.id.settingIcon -> {
+                val nextIntent = Intent(this, SettingActivity::class.java)
+                startActivity(nextIntent)
+            }
         }
     }
 
