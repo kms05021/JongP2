@@ -2,6 +2,7 @@ package com.example.call
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
@@ -14,6 +15,7 @@ import com.gun0912.tedpermission.normal.TedPermission
 
 class MainActivity : AppCompatActivity() {
     val mContext = this
+    var mediaplayer: MediaPlayer? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +48,9 @@ class MainActivity : AppCompatActivity() {
 
         vibeCancelButton.setOnClickListener { stopVibration() }
 
-        alarmButton.setOnClickListener { alarm() }
+        alarmButton.setOnClickListener { startAlarm() }
+
+        alarmStopButton.setOnClickListener { stopAlarm() }
     }
 
     private fun call() {
@@ -113,9 +117,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun alarm() {
-        val uriRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        val ringtone = RingtoneManager.getRingtone(this, uriRingtone)
-        ringtone.play()
+    private fun startAlarm() {
+        mediaplayer = MediaPlayer.create(this, R.raw.ambulance_siren)
+        mediaplayer?.isLooping = true
+        mediaplayer?.start()
+        Thread.sleep(5000)
+        stopAlarm()
+    }
+
+    private fun stopAlarm() {
+        mediaplayer?.stop()
+        mediaplayer?.reset()
     }
 }

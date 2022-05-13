@@ -22,6 +22,7 @@ class SettingActivity : AppCompatActivity() {
 
         binding.submitButton.setOnClickListener {
             Util.setTelNumber(binding.telNumberEditText.text.toString())
+            Util.showNotification("설정이 완료되었습니다.")
         }
     }
 }

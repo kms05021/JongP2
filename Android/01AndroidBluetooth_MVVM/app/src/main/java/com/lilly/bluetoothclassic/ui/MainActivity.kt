@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var db: LogDB
     var mBluetoothAdapter: BluetoothAdapter? = null
     var recv: String = ""
-
+    var mediaplayer: MediaPlayer? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                         "LEVEL2" -> {
                             db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 2))
                             Log.d("DB", "LEVEL2 SUCCESS")
+                            startSound()
                         }
                         "LEVEL3" -> {
                             db.getDao().insertLog(LogEntity(LocalDate.now(), LocalTime.now(), 3))
@@ -224,6 +226,19 @@ class MainActivity : AppCompatActivity() {
             vibratorManager.cancel()
         }*/
 //        }
+    }
+
+    private fun startSound() {
+        mediaplayer = MediaPlayer.create(this, R.raw.ambulance_siren)
+        mediaplayer?.isLooping = true
+        mediaplayer?.start()
+        Thread.sleep(5000)  // sound n초간 재생
+        stopSound()
+    }
+
+    private fun stopSound() {
+        mediaplayer?.stop()
+        mediaplayer?.reset()
     }
 
     // Permission check
