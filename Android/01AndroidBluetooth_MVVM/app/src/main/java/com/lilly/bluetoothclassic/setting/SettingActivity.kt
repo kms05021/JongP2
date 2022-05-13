@@ -1,6 +1,7 @@
 package com.lilly.bluetoothclassic.setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.lilly.bluetoothclassic.MyApplication
 import com.lilly.bluetoothclassic.R
