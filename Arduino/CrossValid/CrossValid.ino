@@ -211,33 +211,33 @@ void  loop()
     }
 
     // Rubber band Check
-    int rubberVal = analogRead(A5);
+    int rubberVal = analogRead(A5);   // 장력으로 인해 발생하는 저항값을 읽어옴
    //Serial.print(" current: ");
    //Serial.println(rubberVal);
   
-   rubberValues[lastIndex] = rubberVal;
+   rubberValues[lastIndex] = rubberVal;   // 가장 오래된 Sample을 지우고 최근 값으로 갱신함
    lastIndex = (lastIndex+1) % BUFFERSIZE;
    int maxVal = -1;
    int minVal = 9999;
-   for(int i = 0; i < BUFFERSIZE; i++)
+   for(int i = 0; i < BUFFERSIZE; i++)    // Sample 범위 내(BUFFERSIZE)에서 최대값과 최소값을 구함 
    { 
     if(rubberValues[i] > maxVal)
-      maxVal = rubberValues[i];
+      maxVal = rubberValues[i];         // 최대값 저장
     else if (rubberValues[i] < minVal)
-      minVal = rubberValues[i];
+      minVal = rubberValues[i];         // 최소값 저장
    }
-    int inBound = 0;
-    if((float)minVal / maxVal > TOLERANCE)
-      inBound = 1;
+    int inBound = 0;              // 최대값과 최소값의 차가 작다(고정 진동 범위 내) -> 1, 크다(고정 진동 범위 밖) -> 0
+    if((float)minVal / maxVal > TOLERANCE)    // 최소값 : 최대값 비율을 구해서 설정한 진동 범위 내에 있는지를 확인
+      inBound = 1;            // 진동 범위 내
     else
-      inBound = 0;
+      inBound = 0;            // 진동 범위 밖
   
-    if(isCounting)
+    if(isCounting)      // 고정 진동 범위 내에 오래 동안 들어와서 시간을 측정 중일 때
     {
-      if(inBound)
+      if(inBound)     // 시간을 측정하고 있고 지금도 범위 내에 있을 때
       {
-        currTime = millis();
-        if(currTime - launchTime >= ALERTTIME && currTime - launchTime < WARNINGTIME)
+        currTime = millis();  // 측정된 시간 계산
+        if(currTime - launchTime >= ALERTTIME && currTime - launchTime < WARNINGTIME) // LEVEL1 확인
         {
           if(validBandV==0)
           {
@@ -249,7 +249,7 @@ void  loop()
           }
 
         }
-        else if(currTime - launchTime >= WARNINGTIME && currTime - launchTime < EMERGENCYTIME)
+        else if(currTime - launchTime >= WARNINGTIME && currTime - launchTime < EMERGENCYTIME)  // LEVEL2 확인
         {
           if(validBandA==0)
           {
@@ -260,7 +260,7 @@ void  loop()
             delay(10);
           }
         }
-        else if(currTime - launchTime >= EMERGENCYTIME)
+        else if(currTime - launchTime >= EMERGENCYTIME) // LEVEL3 확인
         {
           if(validBandC==0)
           {
@@ -272,7 +272,7 @@ void  loop()
           }
         }
       }
-      else
+      else      // 고정 진동 범위를 벗어났을 경우 측정 초기화 
       {
           isCounting = 0;
           currTime = 0;
@@ -282,9 +282,9 @@ void  loop()
           lowMovement = 0;
       }
     }
-    else
+    else  // 시간 측정 중이 아닐 때
     {
-      if(inBound)
+      if(inBound) // 고정 진동 범위 내에 들어왔다면 시간 측정 시작
     {
       isCounting = 1;
       launchTime = millis();  
