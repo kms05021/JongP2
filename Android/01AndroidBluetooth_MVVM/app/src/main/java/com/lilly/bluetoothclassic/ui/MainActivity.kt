@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
 
         // Bluetooth Connect Error
         viewModel.connectError.observe(this) {
-            Util.showNotification("Connect Error. Please check the device")
+            Util.showNotification("블루투스 연결에 실패했습니다.")
             viewModel.setInProgress(false)
         }
 

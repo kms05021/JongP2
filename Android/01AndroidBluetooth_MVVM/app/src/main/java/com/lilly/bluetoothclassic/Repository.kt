@@ -72,7 +72,7 @@ class Repository {
     }
 
     fun registerBluetoothReceiver() {
-        //intentfilter
+        // intentfilter
         val stateFilter = IntentFilter()
         stateFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED) //BluetoothAdapter.ACTION_STATE_CHANGED : 블루투스 상태변화 액션
         stateFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)

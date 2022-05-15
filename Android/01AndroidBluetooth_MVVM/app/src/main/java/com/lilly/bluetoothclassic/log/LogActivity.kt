@@ -32,9 +32,9 @@ class LogActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) {tab, position ->
             when (position) {
-                0 -> tab.text = "Daily"
-                1 -> tab.text = "Week"
-                2 -> tab.text = "Month"
+                0 -> tab.text = "일간"
+                1 -> tab.text = "주간"
+                2 -> tab.text = "월간"
             }
         }.attach()
     }

@@ -136,9 +136,9 @@ class DayFragment : Fragment() {
 
         pieChart.setUsePercentValues(true)
         var noOfLvl = ArrayList<PieEntry>()
-        noOfLvl.add(PieEntry(list1.size.toFloat(), "Level 1"))
-        noOfLvl.add(PieEntry(list2.size.toFloat(), "Level 2"))
-        noOfLvl.add(PieEntry(list3.size.toFloat(), "Level 3"))
+        noOfLvl.add(PieEntry(list1.size.toFloat(), "1단계"))
+        noOfLvl.add(PieEntry(list2.size.toFloat(), "2단계"))
+        noOfLvl.add(PieEntry(list3.size.toFloat(), "3단계"))
 
         val colors: ArrayList<Int> = ArrayList()
         colors.add(Color.parseColor("#4DD0E1"))

@@ -31,7 +31,7 @@ class MyApplication : Application() {
             // 로그를 찍어볼 수 있다.
             // 에러확인 - androidLogger(Level.ERROR)
             androidLogger(org.koin.core.logger.Level.ERROR)
-            // Android Content를 넘겨준다.
+            // Android Content 를 넘겨준다.
             androidContext(this@MyApplication)
             // assets/koin.properties 파일에서 프로퍼티를 가져옴
             androidFileProperties()

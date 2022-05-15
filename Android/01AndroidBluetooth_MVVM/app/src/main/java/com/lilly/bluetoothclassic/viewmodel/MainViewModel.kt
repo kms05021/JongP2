@@ -39,11 +39,14 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun onClickConnect() {
         if (connected.value == false || connected.value == null) {
-            if (repository.isBluetoothSupport()) {   // 블루투스 지원 체크
-                if (repository.isBluetoothEnabled()) { // 블루투스 활성화 체크
-                    //Progress Bar
+            // 블루투스 지원 체크
+            if (repository.isBluetoothSupport()) {
+                // 블루투스 활성화 체크
+                if (repository.isBluetoothEnabled()) {
+                    // 블루투스를 지원하고 활성 상태인 경우
+                    // Progress Bar
                     setInProgress(true)
-                    //디바이스 스캔 시작
+                    // 디바이스 스캔 시작
                     repository.scanDevice()
                 } else {
                     // 블루투스를 지원하지만 비활성 상태인 경우
@@ -51,7 +54,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
                     _requestBleOn.value = Event(true)
                 }
             } else { //블루투스 지원 불가
-                Util.showNotification("Bluetooth is not supported.")
+                Util.showNotification("블루투스가 지원되지 않는 기기입니다.")
             }
         } else {
             repository.disconnect()
