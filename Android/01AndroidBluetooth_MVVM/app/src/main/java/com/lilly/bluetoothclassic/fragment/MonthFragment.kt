@@ -18,11 +18,13 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.log.LogDB
 import com.lilly.bluetoothclassic.log.LogEntity
 import java.time.LocalDate
+import java.time.LocalTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,6 +66,17 @@ class MonthFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // db 연결
         db = Room.databaseBuilder(view.context, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
+
+        // only for test
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 3))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusMonths(4), LocalTime.now(), 3))
 
         levelSpinner = view.findViewById(R.id.levelSpinner)
         ArrayAdapter.createFromResource(
@@ -116,6 +129,8 @@ class MonthFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun initBarChart() {
         //hide grid lines
         barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisLeft.spaceBottom = 2f
+
         val xAxis: XAxis = barChart.xAxis
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
@@ -139,7 +154,7 @@ class MonthFragment : Fragment(), AdapterView.OnItemSelectedListener {
         xAxis.setLabelCount(12, true)
         xAxis.axisMinimum = 0f
         xAxis.axisMaximum = 11f
-//        xAxis.granularity = 1f
+        xAxis.granularity = 1f
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -176,8 +191,15 @@ class MonthFragment : Fragment(), AdapterView.OnItemSelectedListener {
         barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
 
         val data = BarData(barDataSet)
-        barChart.data = data
+        var IntFormatter : ValueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString() + "회"
+            }
+        }
+        data.setValueFormatter(IntFormatter)
 
+        barChart.data = data
+        barChart.setFitBars(true)
         barChart.invalidate()
     }
 
@@ -187,29 +209,29 @@ class MonthFragment : Fragment(), AdapterView.OnItemSelectedListener {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             when(value.toInt()) {
                 0 -> {
-                    return "JAN"
+                    return "1월"
                 }1 -> {
-                    return "FEB"
+                    return "2월"
                 }2 -> {
-                    return "MAR"
+                    return "3월"
                 }3 -> {
-                    return "APR"
+                    return "4월"
                 }4 -> {
-                    return "MAY"
+                    return "5월"
                 }5 -> {
-                    return "JUN"
+                    return "6월"
                 }6 -> {
-                    return "JUL"
+                    return "7월"
                 }7 -> {
-                    return "AUG"
+                    return "8월"
                 }8 -> {
-                    return "SEP"
+                    return "9월"
                 }9 -> {
-                    return "OCT"
+                    return "10월"
                 }10 -> {
-                    return "NOV"
+                    return "11월"
                 }11 -> {
-                    return "DEC"
+                    return "12월"
                 }
             }
             return ""

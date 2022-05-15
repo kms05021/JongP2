@@ -18,10 +18,12 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.log.LogDB
 import com.lilly.bluetoothclassic.log.LogEntity
 import java.time.LocalDate
+import java.time.LocalTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,6 +66,17 @@ class DayFragment : Fragment() {
 
         // db 연결
         db = Room.databaseBuilder(view.context, LogDB::class.java, "LogDB").allowMainThreadQueries().build()
+
+        // only for test
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 1))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 2))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 3))
+//        db.getDao().insertLog(LogEntity(LocalDate.now().minusDays(1), LocalTime.now(), 3))
 
         picker = view.findViewById(R.id.dpSpinner)
         picker.init(
@@ -111,7 +124,7 @@ class DayFragment : Fragment() {
     }
 
     private fun initPieChart() {
-        pieChart.setUsePercentValues(true)
+        pieChart.setUsePercentValues(false)
         pieChart.description.text = ""
         //hollow pie chart
         pieChart.isDrawHoleEnabled = false
@@ -119,7 +132,6 @@ class DayFragment : Fragment() {
         pieChart.setDrawEntryLabels(false)
         //adding padding
         pieChart.setExtraOffsets(20f, 0f, 20f, 20f)
-        pieChart.setUsePercentValues(true)
         pieChart.isRotationEnabled = false
         pieChart.setDrawEntryLabels(false)
         pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
@@ -134,7 +146,6 @@ class DayFragment : Fragment() {
         var list2: List<LogEntity> = db.getDao().getByLevelAndDateAndTime(2, onlyDate.minusDays(1), onlyDate)
         var list3: List<LogEntity> = db.getDao().getByLevelAndDateAndTime(3, onlyDate.minusDays(1), onlyDate)
 
-        pieChart.setUsePercentValues(true)
         var noOfLvl = ArrayList<PieEntry>()
         noOfLvl.add(PieEntry(list1.size.toFloat(), "1단계"))
         noOfLvl.add(PieEntry(list2.size.toFloat(), "2단계"))
@@ -148,8 +159,12 @@ class DayFragment : Fragment() {
         val dataSet = PieDataSet(noOfLvl, "Number Of Levels")
         val data = PieData(dataSet)
 
-        // In Percentage
-        data.setValueFormatter(PercentFormatter())
+        var IntFormatter : ValueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString() + "회"
+            }
+        }
+        data.setValueFormatter(IntFormatter)
         dataSet.sliceSpace = 3f
         dataSet.colors = colors
         pieChart.data = data
