@@ -16,6 +16,7 @@ import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.lilly.bluetoothclassic.R
 import com.lilly.bluetoothclassic.log.LogDB
@@ -114,6 +115,8 @@ class WeekFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun initBarChart() {
         //hide grid lines
         barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisLeft.spaceBottom = 2f
+
         val xAxis: XAxis = barChart.xAxis
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
@@ -161,6 +164,12 @@ class WeekFragment : Fragment(), AdapterView.OnItemSelectedListener {
         barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
 
         val data = BarData(barDataSet)
+        var IntFormatter : ValueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString() + "회"
+            }
+        }
+        data.setValueFormatter(IntFormatter)
         barChart.data = data
 
         barChart.invalidate()
