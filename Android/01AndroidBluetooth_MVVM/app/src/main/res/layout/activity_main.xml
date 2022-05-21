@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.lilly.bluetoothclassic.viewmodel.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/parentLayout"
+        android:background="@drawable/background_gradient">
+
+        <TextView
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="40sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="A P P"
+            android:layout_height="80dp" />
+
+        <ScrollView
+            android:id="@+id/sv_read_data"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txt_read"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@{viewModel.txtRead}"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </ScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/background_radius"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_connect"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/button_rectangle"
+                android:onClick="@{()->viewModel.onClickConnect()}"
+                android:text="@{viewModel.btnConnected?@string/disconnect:@string/connect}"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginBottom="50dp"
+                app:layout_constraintBottom_toTopOf="@id/btn_start"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btn_start"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@{viewModel.btnConnected?@drawable/button_circle_gradient:@drawable/button_circle_gray}"
+                android:clickable="@{viewModel.btnConnected?true:false}"
+                android:onClick="@{()->viewModel.onClickStart()}"
+                android:scaleType="fitXY"
+                android:src="@{viewModel.onStart?@drawable/ic_baseline_stop_24:@drawable/ic_baseline_play_arrow_24}"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <LinearLayout
+                android:id="@+id/logLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageButton
+                    android:id="@+id/logIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/button_circle_white"
+                    android:elevation="8dp"
+                    android:onClick="onClickMethod"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_chart_png" />
+
+                <ImageButton
+                    android:id="@+id/settingIcon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/button_circle_white"
+                    android:elevation="8dp"
+                    android:onClick="onClickMethod"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_setting_png" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="100dp"
+                android:background="@drawable/round_background_black_trans"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="@{viewModel.inProgressView?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:indeterminateTint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@{viewModel.txtProgress}"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

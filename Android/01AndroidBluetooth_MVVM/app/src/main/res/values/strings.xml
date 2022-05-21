@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LillyBluetoothClassic</string>
+    <string name="connect">블루투스 연결</string>
+    <string name="disconnect">블루투스 해제</string>
+    <string name="stop">수면 종료</string>
+    <string name="start">수면 시작</string>
+</resources>
