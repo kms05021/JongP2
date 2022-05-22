@@ -6,9 +6,9 @@
 // 장력 고무줄 센서 매크로
 #define BUFFERSIZE 50
 #define TOLERANCE 0.988
-#define ALERTTIME 5000
-#define WARNINGTIME 10000
-#define EMERGENCYTIME 15000
+#define ALERTTIME 10000
+#define WARNINGTIME 20000
+#define EMERGENCYTIME 30000
 
 // 블루투스 모듈 전역 변수
 const int pinTx = 7;  // 블루투스 TX 연결 핀 번호
