@@ -1,4 +1,4 @@
-How to include the 'MMA8451-master' library in Arduino
-- Download the MMA8451-master folder as a whole folder.
-- Move the folder you downloaded to C:\Program Files (x86)\Arduino\libraries.
-- You can now use the MMA845X library by adding the command "#include MMA8451_n0m1.h".
+코드 수정 필요 시 CrossVaild 참조
+- CrossVaild 폴더의 ino 파일 사용
+- IDE에서 수정 후에 아두이노 보드에 업로드
+- 이후에는 전원 공급이나 또는 리셋 버튼을 누를 시에 프로그램 자동 실행
