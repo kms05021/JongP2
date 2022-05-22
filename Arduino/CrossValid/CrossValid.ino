@@ -1,8 +1,8 @@
 #include <SoftwareSerial.h>
 // 기류 센서 매크로
-#define Alert 5000
-#define Warning 10000
-#define Emergency 15000
+#define Alert 10000
+#define Warning 20000
+#define Emergency 30000
 // 장력 고무줄 센서 매크로
 #define BUFFERSIZE 50
 #define TOLERANCE 0.988
