@@ -2,7 +2,7 @@
 
 #### 0. 주제
 - IoT 생체 신호 감지 모듈 개발 (아두이노, 안드로이드)
-  Development of IoT biosignal detection module (Arduino, Android)
+- Development of IoT biosignal detection module (Arduino, Android)
 
 #### 1. 안드로이드 어플의 기능
 
